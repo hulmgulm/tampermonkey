@@ -1,13 +1,15 @@
 // ==UserScript==
-// @name         Github PR Highlighting
+// @name         Enterprise Github PR Highlighting
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Highlight the PRs which are ready to get reviewed
-// @author       You
+// @author       hulmgulm
 // @include      /https://github.*
 // @grant        none
-// @require  http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js
-// @require  https://gist.github.com/raw/2625891/waitForKeyElements.js
+// @require      http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js
+// @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
+// @downloadURL  https://raw.githubusercontent.com/hulmgulm/tampermonkey/main/pr_review.js
+// @updateURL    https://raw.githubusercontent.com/hulmgulm/tampermonkey/main/pr_review.js
 // ==/UserScript==
 
 const prHandling = () => {
