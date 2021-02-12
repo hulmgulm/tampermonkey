@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enterprise Github PR Highlighting
-// @namespace    http://tampermonkey.net/
-// @version      0.3
+// @namespace    https://github.com/hulmgulm/tampermonkey
+// @version      0.3.1
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
