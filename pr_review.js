@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enterprise Github PR Highlighting
 // @namespace    https://github.com/hulmgulm/tampermonkey
-// @version      0.4.0
+// @version      0.4.1
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
@@ -56,13 +56,13 @@ const prHandling = () => {
         return;
       }
 
-      const red = issue.querySelectorAll(`[class*="text-red"]`);
+      const red = issue.querySelectorAll(`[class*="color-text-danger"]`);
       if (red.length > 0) {
         issue.style = 'background-color: rgba(255,0,0,.1)';
         return;
       }
 
-      const green = issue.querySelectorAll(`[class*="text-green"]`);
+      const green = issue.querySelectorAll(`[aria-label="Success: This commit looks good"]`);
       if (green.length > 0) {
         issue.style = 'background-color: rgba(0,255,0,.1)';
         return;
