@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enterprise Github PR Highlighting
 // @namespace    https://github.com/hulmgulm/tampermonkey
-// @version      0.4.2
+// @version      0.5.0
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
@@ -25,6 +25,9 @@ const prHandling = () => {
         return;
       }
       const data_hovercard_url = link.attributes['data-hovercard-url'].value;
+      const pr_url = link.attributes.href.value;
+
+      let opened_by = issue.querySelector(`[class*="opened-by"]`);
 
       GM.xmlHttpRequest ({
         method: "GET",
@@ -35,16 +38,35 @@ const prHandling = () => {
         onload: function(response) {
           if (response.status === 200) {
             const target_branch = response.responseText.match(/class="commit-ref[^>]*>([^<]*)</i)[1].trim();
-            const opened_by = issue.querySelector(`[class*="opened-by"]`);
             const span = document.createElement('span');
             span.appendChild(document.createTextNode(target_branch));
             span.classList.add('commit-ref');
             span.style = 'font-size: 0.9em';
             opened_by.before(span);
+            opened_by = span;
           } else {
             console.log('Unable to get PR details:', response.status, response.statusText, response.readyState, response.responseHeaders, response.responseText, response.finalUrl);
           }
         }
+      });
+
+      GM.xmlHttpRequest ({
+          method: "GET",
+          url: pr_url + "/show_partial?partial=pull_requests%2Fmerging",
+          onload: function(response) {
+            if (response.status === 200) {
+              if (response.responseText.includes('This branch has conflicts that must be resolved')) {
+                const span = document.createElement('span');
+                span.appendChild(document.createTextNode('Merge Conflict!'));
+                span.style = 'margin:0 4px;--label-r:117;--label-g:6;--label-b:50;--label-h:336;--label-s:90;--label-l:24;';
+                span.classList.add('IssueLabel');
+                span.classList.add('hx_IssueLabel');
+                opened_by.before(span);
+              }
+            } else {
+              console.log('Unable to get merge details:', response.status, response.statusText, response.readyState, response.responseHeaders, response.responseText, response.finalUrl);
+            }
+          }
       });
 
       const draft = issue.querySelectorAll(`[aria-label="Open draft pull request"]`);
