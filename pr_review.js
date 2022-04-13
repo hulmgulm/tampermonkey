@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enterprise Github PR Highlighting
 // @namespace    https://github.com/hulmgulm/tampermonkey
-// @version      0.5.0
+// @version      0.6.0
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
@@ -29,6 +29,7 @@ const prHandling = () => {
 
       let opened_by = issue.querySelector(`[class*="opened-by"]`);
 
+      /* load hovercard, containing target_branch */
       GM.xmlHttpRequest ({
         method: "GET",
         url: data_hovercard_url + "?subject=" + hovercard_subject_tag + "&current_path=" + current_path,
@@ -50,6 +51,7 @@ const prHandling = () => {
         }
       });
 
+      /* get merge details */
       GM.xmlHttpRequest ({
           method: "GET",
           url: pr_url + "/show_partial?partial=pull_requests%2Fmerging",
@@ -65,6 +67,31 @@ const prHandling = () => {
               }
             } else {
               console.log('Unable to get merge details:', response.status, response.statusText, response.readyState, response.responseHeaders, response.responseText, response.finalUrl);
+            }
+          }
+      });
+
+      /* get pr details to get reviewers */
+      GM.xmlHttpRequest ({
+          method: "GET",
+          url: pr_url,
+          onload: function(response) {
+            if (response.status === 200) {
+                const regexp = /class=["']reviewers-status-icon[^>]*aria-label=["']([^"']*)["']/g;
+                const rawReviews = [...response.responseText.matchAll(regexp)];
+                const target = issue.querySelector(`[class*="opened-by"]`).parentElement;
+                rawReviews.forEach( review => {
+                  if (review[1] !== 'Re-request review') {
+                      const span = document.createElement('span');
+                      span.appendChild(document.createTextNode(review[1]));
+                      span.style = 'margin:0 4px;';
+                      span.classList.add('IssueLabel');
+                      span.classList.add('hx_IssueLabel');
+                      target.after(span);
+                  }
+                });
+            } else {
+              console.log('Unable to get pr details:', response.status, response.statusText, response.readyState, response.responseHeaders, response.responseText, response.finalUrl);
             }
           }
       });
