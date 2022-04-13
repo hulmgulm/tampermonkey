@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enterprise Github PR Highlighting
 // @namespace    https://github.com/hulmgulm/tampermonkey
-// @version      0.6.0
+// @version      0.6.1
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
@@ -77,7 +77,7 @@ const prHandling = () => {
           url: pr_url,
           onload: function(response) {
             if (response.status === 200) {
-                const regexp = /class=["']reviewers-status-icon[^>]*aria-label=["']([^"']*)["']/g;
+                const regexp = /class=["']reviewers-status-icon[^"']*["']*[^>]*aria-label=["']([^"']*)["']/g;
                 const rawReviews = [...response.responseText.matchAll(regexp)];
                 const target = issue.querySelector(`[class*="opened-by"]`).parentElement;
                 rawReviews.forEach( review => {
