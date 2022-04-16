@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enterprise Github PR Highlighting
 // @namespace    https://github.com/hulmgulm/tampermonkey
-// @version      0.6.1
+// @version      0.6.2
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
@@ -81,9 +81,9 @@ const prHandling = () => {
                 const rawReviews = [...response.responseText.matchAll(regexp)];
                 const target = issue.querySelector(`[class*="opened-by"]`).parentElement;
                 rawReviews.forEach( review => {
-                  if (review[1] !== 'Re-request review') {
+                  if (review[1] !== 'Re-request review' && !review[1].includes('is a code owner')) {
                       const span = document.createElement('span');
-                      span.appendChild(document.createTextNode(review[1]));
+                      span.appendChild(document.createTextNode(review[1].replace('approved these changes','✅').replace('requested changes','❌').replace('Awaiting requested review from','🟠')));
                       span.style = 'margin:0 4px;';
                       span.classList.add('IssueLabel');
                       span.classList.add('hx_IssueLabel');
