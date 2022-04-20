@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enterprise Github PR Highlighting
 // @namespace    https://github.com/hulmgulm/tampermonkey
-// @version      0.6.4
+// @version      0.6.5
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
@@ -13,19 +13,20 @@
 // ==/UserScript==
 
 const prHandling = () => {
-  console.log(document.getElementById('repo-content-pjax-container')?.getAttribute('prfinished'));
-  if (document.getElementById('repo-content-pjax-container')?.getAttribute('prfinished') === 'true') {
-    // no need to run again
-    return;
-  }
-
   console.log('Running PR handling ... ');
 
   const hovercard_subject_tag = document.querySelector('[name="hovercard-subject-tag"]').attributes.content.value;
   const current_path = new URL(document.documentURI).pathname;
+  let ranAlready = false;
 
   const colorIssues = issues => {
     issues.forEach(issue => {
+      const ranAlreadyMarker = issue.querySelector(`[prfinished="true"]`);
+      if (ranAlready || ranAlreadyMarker) {
+          ranAlready = true;
+          return;
+      }
+
       const link = issue.querySelector('[data-hovercard-url]');
       if (!link) {
         return;
@@ -48,6 +49,7 @@ const prHandling = () => {
             const span = document.createElement('span');
             span.appendChild(document.createTextNode(target_branch));
             span.classList.add('commit-ref');
+            span.setAttribute('prfinished', 'true');
             span.style = 'font-size: 0.9em';
             opened_by.before(span);
             opened_by = span;
@@ -89,7 +91,7 @@ const prHandling = () => {
             rawReviews.forEach(review => {
               if (review[1] !== 'Re-request review' && !review[1].includes('is a code owner')) {
                 const span = document.createElement('span');
-                span.appendChild(document.createTextNode(review[1].replace('approved these changes', '✅').replace('requested changes', '❌').replace('Awaiting requested review from', '🟠')));
+                span.appendChild(document.createTextNode(review[1].replace('approved these changes', '✅').replace('requested changes', '❌').replace('Awaiting requested review from', '🟠').replace('left review comments','💬')));
                 span.style = 'margin:0 4px;';
                 span.classList.add('IssueLabel');
                 span.classList.add('hx_IssueLabel');
@@ -135,7 +137,6 @@ const prHandling = () => {
   if (issues.length > 0) {
     colorIssues(issues);
   }
-  document.getElementById('repo-content-pjax-container').setAttribute('prfinished', 'true');
 };
 
 waitForKeyElements(`[data-ga-click*="New pull request"]`, prHandling);
