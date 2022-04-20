@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enterprise Github PR Highlighting
 // @namespace    https://github.com/hulmgulm/tampermonkey
-// @version      0.6.2
+// @version      0.6.3
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
@@ -13,6 +13,11 @@
 // ==/UserScript==
 
 const prHandling = () => {
+  if (document.getElementsByTagName("body")[0].getAttribute('prfinished') === 'true') {
+    // no need to run again
+    return;
+  }
+
   console.log('Running PR handling ... ');
 
   const hovercard_subject_tag = document.querySelector('[name="hovercard-subject-tag"]').attributes['content'].value;
@@ -130,6 +135,7 @@ const prHandling = () => {
   if (issues.length > 0) {
     colorIssues(issues);
   }
+  document.getElementsByTagName("body")[0].setAttribute('prfinished', 'true');
 };
 
 waitForKeyElements(`[data-ga-click*="New pull request"]`, prHandling);
