@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enterprise Github PR Highlighting
 // @namespace    https://github.com/hulmgulm/tampermonkey
-// @version      0.6.5
+// @version      0.6.6
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
@@ -50,7 +50,7 @@ const prHandling = () => {
             span.appendChild(document.createTextNode(target_branch));
             span.classList.add('commit-ref');
             span.setAttribute('prfinished', 'true');
-            span.style = 'font-size: 0.9em';
+            span.style = 'font-size: 0.9em; margin-right: 3px; padding: 0 3px';
             opened_by.before(span);
             opened_by = span;
           } else {
@@ -113,13 +113,13 @@ const prHandling = () => {
         return;
       }
 
-      const red = issue.querySelectorAll(`[class*="color-text-danger"]`);
+      const red = issue.querySelectorAll(`[class*="color-fg-danger"]`);
       if (red.length > 0) {
         issue.style = 'background-color: rgba(255,0,0,.1)';
         return;
       }
 
-      const green = issue.querySelectorAll(`[class*="color-text-success"]`);
+      const green = issue.querySelectorAll(`[class*="color-fg-success"]`);
       if (green.length > 0) {
         issue.style = 'background-color: rgba(0,255,0,.1)';
         return;
