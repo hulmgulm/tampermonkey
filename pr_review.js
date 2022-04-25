@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enterprise Github PR Highlighting
 // @namespace    https://github.com/hulmgulm/tampermonkey
-// @version      0.6.6
+// @version      0.6.7
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
@@ -125,7 +125,7 @@ const prHandling = () => {
         return;
       }
 
-      const yellow = issue.querySelectorAll(`[class*="color-yellow-7"]`);
+      const yellow = issue.querySelectorAll(`[class*="hx_dot-fill-pending-icon"]`);
       if (yellow.length > 0) {
         issue.style = 'background-color: rgba(255,178,0,.1)';
         return;
