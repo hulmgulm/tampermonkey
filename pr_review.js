@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         Enterprise Github PR Highlighting
 // @namespace    https://github.com/hulmgulm/tampermonkey
-// @version      0.6.7
+// @version      0.6.8
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
 // @grant        GM.xmlHttpRequest
-// @require      http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js
+// @require      http://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @downloadURL  https://raw.githubusercontent.com/hulmgulm/tampermonkey/main/pr_review.js
 // @updateURL    https://raw.githubusercontent.com/hulmgulm/tampermonkey/main/pr_review.js
@@ -89,7 +89,7 @@ const prHandling = () => {
             const rawReviews = [...response.responseText.matchAll(regexp)];
             const target = issue.querySelector(`[class*="opened-by"]`).parentElement;
             rawReviews.forEach(review => {
-              if (review[1] !== 'Re-request review' && !review[1].includes('is a code owner')) {
+              if (review[1] !== 'Re-request review' && !review[1].includes('is a code owner') &&!review[1].includes('will be requested when the pull request is marked ready for review')) {
                 const span = document.createElement('span');
                 span.appendChild(document.createTextNode(review[1].replace('approved these changes', '✅').replace('requested changes', '❌').replace('Awaiting requested review from', '🟠').replace('left review comments','💬')));
                 span.style = 'margin:0 4px;';
