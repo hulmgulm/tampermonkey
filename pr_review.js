@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enterprise Github PR Highlighting
 // @namespace    https://github.com/hulmgulm/tampermonkey
-// @version      0.7.1
+// @version      0.7.2
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
@@ -19,20 +19,6 @@ const prHandling = () => {
   const hovercard_subject_tag = document.querySelector('[name="hovercard-subject-tag"]').attributes.content.value;
   const current_path = new URL(document.documentURI).pathname;
   let ranAlready = false;
-
-  // add "hide draft PRs" link
-  const table_list_header = document.querySelector('#js-issues-toolbar .table-list-header-toggle');
-  const link = document.createElement('a');
-  link.appendChild(document.createTextNode('Hide Draft PRs'));
-  link.classList.add('btn-link');
-  link.addEventListener('click', () => {
-      const input = document.querySelector('#js-issues-search');
-      input.value += ' draft:false';
-      document.querySelector('.subnav-search.width-full').submit();
-
-  });
-  // does not get added. No idea why?!?!
-  table_list_header.appendChild(link);
 
   const colorIssues = issues => {
     issues.forEach(issue => {
@@ -152,6 +138,19 @@ const prHandling = () => {
   if (issues.length > 0) {
     colorIssues(issues);
   }
+
+  // add "hide draft PRs" link
+  const table_list_header = document.querySelector('#js-issues-toolbar .table-list-header-toggle');
+  const link = document.createElement('a');
+  link.appendChild(document.createTextNode('Hide Draft PRs'));
+  link.classList.add('btn-link');
+  link.addEventListener('click', () => {
+      const input = document.querySelector('#js-issues-search');
+      input.value += ' draft:false';
+      document.querySelector('.subnav-search.width-full').submit();
+
+  });
+  table_list_header.appendChild(link);
 };
 
 waitForKeyElements(`[data-ga-click*="New pull request"]`, prHandling);
