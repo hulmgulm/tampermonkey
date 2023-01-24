@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         Enterprise Github PR Highlighting
 // @namespace    https://github.com/hulmgulm/tampermonkey
-// @version      0.6.8
+// @version      0.7.0
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
 // @grant        GM.xmlHttpRequest
+// @grant        GM_log
 // @require      http://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @downloadURL  https://raw.githubusercontent.com/hulmgulm/tampermonkey/main/pr_review.js
@@ -13,11 +14,25 @@
 // ==/UserScript==
 
 const prHandling = () => {
-  console.log('Running PR handling ... ');
+  console.log('Tampermonkey GitHub PR handling ... ');
 
   const hovercard_subject_tag = document.querySelector('[name="hovercard-subject-tag"]').attributes.content.value;
   const current_path = new URL(document.documentURI).pathname;
   let ranAlready = false;
+
+  // add "hide draft PRs" link
+  const table_list_header = document.querySelector('#js-issues-toolbar .table-list-header-toggle');
+  const link = document.createElement('a');
+  link.appendChild(document.createTextNode('Hide Draft PRs'));
+  link.classList.add('btn-link');
+  link.addEventListener('click', () => {
+      const input = document.querySelector('#js-issues-search');
+      input.value += ' draft:false';
+      document.querySelector('.subnav-search.width-full').submit();
+
+  });
+  // does not get added. No idea why?!?!
+  table_list_header.appendChild(link);
 
   const colorIssues = issues => {
     issues.forEach(issue => {
