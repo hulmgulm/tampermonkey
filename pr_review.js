@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enterprise Github PR Highlighting
 // @namespace    https://github.com/hulmgulm/tampermonkey
-// @version      0.7.2
+// @version      0.8.0
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
@@ -141,16 +141,27 @@ const prHandling = () => {
 
   // add "hide draft PRs" link
   const table_list_header = document.querySelector('#js-issues-toolbar .table-list-header-toggle');
-  const link = document.createElement('a');
-  link.appendChild(document.createTextNode('Hide Draft PRs'));
-  link.classList.add('btn-link');
-  link.addEventListener('click', () => {
-      const input = document.querySelector('#js-issues-search');
-      input.value += ' draft:false';
+  const filterLink = document.createElement('a');
+  const filterInput = document.querySelector('#js-issues-search');
+  filterLink.classList.add('btn-link');
+  if (filterInput.value.includes('draft:false')) {
+      // draft PRs already hidden
+      filterLink.classList.add('selected');
+  }
+  filterLink.appendChild(document.createTextNode('Hide Draft PRs'));
+  filterLink.addEventListener('click', () => {
+      if (filterInput.value.includes('draft:false')) {
+          // draft PRs already hidden
+          filterLink.classList.remove('selected');
+          filterInput.value = filterInput.value.replace('draft:false', '');
+      } else {
+          // draft PRs not hidden
+          filterLink.classList.add('selected');
+          filterInput.value += ' draft:false';
+      }
       document.querySelector('.subnav-search.width-full').submit();
-
   });
-  table_list_header.appendChild(link);
+  table_list_header.appendChild(filterLink);
 };
 
 waitForKeyElements(`[data-ga-click*="New pull request"]`, prHandling);
