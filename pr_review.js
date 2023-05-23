@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enterprise Github PR Highlighting
 // @namespace    https://github.com/hulmgulm/tampermonkey
-// @version      0.8.1
+// @version      0.8.2
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
@@ -105,7 +105,7 @@ const prHandling = () => {
                 }
             });
 
-            const draft = issue.querySelectorAll(`[aria-label="Open draft pull request"]`);
+            const draft = issue.querySelectorAll(`[aria-label="Draft Pull Request"]`);
             const tagDoNotMerge = issue.querySelectorAll(`[title*="Do not merge"]`);
             const tagDoNotReview = issue.querySelectorAll(`[title*="do not review"]`);
             const tagDraft = issue.querySelectorAll(`[title="DRAFT"]`);
