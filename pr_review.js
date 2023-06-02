@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enterprise Github PR Highlighting
 // @namespace    https://github.com/hulmgulm/tampermonkey
-// @version      0.8.2
+// @version      0.9.0
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
@@ -138,6 +138,11 @@ const prHandling = () => {
     if (issues.length > 0) {
         colorIssues(issues);
     }
+
+    // add parameters to pull request tab
+    const PRTab = document.querySelector('#pull-requests-tab');
+    const currentURL = PRTab.getAttribute('href');
+    PRTab.setAttribute('href', `${currentURL}?q=is%3Apr+is%3Aopen++draft%3Afalse`);
 
     // add "hide draft PRs" link
     if (!document.querySelector('#hideDraftFilter')) {
