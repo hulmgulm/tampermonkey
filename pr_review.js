@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Enterprise Github PR Highlighting
+// @name         Enterprise Github PR/Discussion Highlighting
 // @namespace    https://github.com/hulmgulm/tampermonkey
-// @version      0.9.1
+// @version      0.10.0
 // @description  Highlight the PRs which are ready to get reviewed
 // @author       hulmgulm
 // @include      /https://github.*
@@ -169,8 +169,13 @@ const prHandling = () => {
 
 waitForKeyElements(`[data-ga-click*="New pull request"]`, prHandling);
 
-// add parameters to pull request tab
+// add default search parameters to pull requests tab
 const PRTab = document.querySelector('#pull-requests-tab');
 const currentURL = PRTab.getAttribute('href');
-PRTab.setAttribute('href', `${currentURL}?q=is%3Apr+is%3Aopen++draft%3Afalse`);
+PRTab.setAttribute('href', `${currentURL}?q=is%3Apr+is%3Aopen+draft%3Afalse`);
+
+// add default search parameters to discussions tab
+const discussionsTab = document.querySelector('#discussions-tab');
+const discussionsURL = discussionsTab.getAttribute('href');
+discussionsTab.setAttribute('href', `${discussionsURL}?discussions_q=is%3Aunlocked`);
 
